@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>THW Barcode Scanner</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#003399">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="mobile-web-app-capable" content="yes">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>THW Barcode Scanner</h1>
+    </header>
+    
+    <main>
+      <div id="scanSection" class="section">
+        <button id="scanButton" class="button">Barcode scannen</button>
+        <div id="scannerContainer" class="hidden">
+          <video id="preview"></video>
+          <button id="cancelScan" class="button cancel">Abbrechen</button>
+        </div>
+        
+        <div class="or-divider">
+          <span>ODER</span>
+        </div>
+        
+        <div id="manualInputContainer">
+          <input type="text" id="barcodeInput" placeholder="Barcode manuell eingeben" class="text-input">
+          <button id="saveManualButton" class="button">Speichern</button>
+        </div>
+      </div>
+      
+      <div id="infoSection" class="section">
+        <p id="barcodeInfo">Kein Barcode gespeichert. Bitte scannen Sie einen CODE-128 Barcode oder geben Sie ihn manuell ein.</p>
+        <button id="clearButton" class="button secondary hidden">Barcode löschen</button>
+      </div>
+    </main>
+  </div>
+  
+  <div id="barcodeWrapper" class="hidden">
+    <svg id="barcodeDisplay"></svg>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/quagga@0.12.1/dist/quagga.min.js"></script>
+  <script src="app.js"></script>
+  <script>
+    // Service Worker registrieren
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js')
+        .then(reg => console.log('Service Worker registriert', reg))
+        .catch(err => console.log('Service Worker nicht registriert', err));
+    }
+    
+    // Vollbildmodus erzwingen, wenn als App geöffnet
+    window.addEventListener('load', function() {
+      if (window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches) {
+        // App läuft im Standalone-Modus
+        document.body.classList.add('standalone-mode');
+      }
+    });
+  </script>
+</body>
+</html>

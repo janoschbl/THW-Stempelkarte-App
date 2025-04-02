@@ -1,0 +1,11 @@
+{
+    "name": "THW Barcode Scanner",
+    "short_name": "THW Scanner",
+    "description": "Barcode Scanner für THW Einstempelung",
+    "start_url": "/index.html",
+    "display": "standalone",
+    "orientation": "portrait",
+    "background_color": "#f5f5f5",
+    "theme_color": "#003399"
+  }
+  
