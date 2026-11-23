@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // DOM-Elemente
     const scanButton = document.getElementById("scanButton");
     const cancelScan = document.getElementById("cancelScan");
     const scannerContainer = document.getElementById("scannerContainer");
@@ -10,43 +9,37 @@ document.addEventListener("DOMContentLoaded", function () {
     const barcodeInput = document.getElementById("barcodeInput");
     const saveManualButton = document.getElementById("saveManualButton");
   
-    // Gespeicherten Barcode laden
+    // lädt den Barcode aus dem Local Storage
     loadBarcode();
   
-    // Event-Listener
     scanButton.addEventListener("click", requestCameraPermission);
     cancelScan.addEventListener("click", stopScanner);
     clearButton.addEventListener("click", clearBarcode);
     saveManualButton.addEventListener("click", saveManualBarcode);
     
-    // Auch Enter-Taste für manuelle Eingabe unterstützen
     barcodeInput.addEventListener("keypress", function(event) {
       if (event.key === "Enter") {
         saveManualBarcode();
       }
     });
   
-    // Manuelle Barcode-Eingabe speichern
     function saveManualBarcode() {
       const code = barcodeInput.value.trim();
       if (code) {
         saveBarcode(code);
-        barcodeInput.value = ""; // Eingabefeld leeren
+        barcodeInput.value = "";
       } else {
         alert("Bitte geben Sie einen Barcode ein.");
       }
     }
   
-    // Kamera-Berechtigung explizit anfordern
     async function requestCameraPermission() {
       try {
-        // Explizit nach Kamera-Berechtigung fragen
         const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
         
-        // Stream beenden, wir brauchen ihn nur für die Berechtigungsanfrage
+        // gibt die Kamera vor dem Start von Quagga wieder frei
         stream.getTracks().forEach(track => track.stop());
         
-        // Wenn die Berechtigung erteilt wurde, Scanner starten
         startScanner();
       } catch (err) {
         console.error("Kamera-Berechtigung verweigert:", err);
@@ -54,7 +47,6 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     }
   
-    // Barcode-Scanner starten
     function startScanner() {
       scannerContainer.classList.remove("hidden");
       scanButton.classList.add("hidden");
@@ -66,11 +58,11 @@ document.addEventListener("DOMContentLoaded", function () {
             type: "LiveStream",
             target: document.querySelector("#preview"),
             constraints: {
-              facingMode: "environment", // Rückkamera verwenden
+              facingMode: "environment",
             },
           },
           decoder: {
-            readers: ["code_128_reader"], // Nur CODE-128 lesen
+            readers: ["code_128_reader"],
           },
         },
         function (err) {
@@ -86,7 +78,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       );
   
-      // Barcode erkannt
       Quagga.onDetected(function (result) {
         const code = result.codeResult.code;
         if (code) {
@@ -96,7 +87,6 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     }
   
-    // Scanner stoppen
     function stopScanner() {
       if (Quagga) {
         Quagga.stop();
@@ -105,27 +95,24 @@ document.addEventListener("DOMContentLoaded", function () {
       scanButton.classList.remove("hidden");
     }
   
-    // Barcode speichern
     function saveBarcode(code) {
       localStorage.setItem("thwBarcode", code);
       displayBarcode(code);
     }
   
-    // Barcode anzeigen
     function displayBarcode(code) {
       if (code) {
         barcodeInfo.textContent = `Gespeicherter Barcode: ${code}`;
         barcodeWrapper.classList.remove("hidden");
         clearButton.classList.remove("hidden");
   
-        // Barcode mit JsBarcode generieren
         JsBarcode("#barcodeDisplay", code, {
           format: "CODE128",
           lineColor: "#003399",
           width: 2,
           height: 120,
-          displayValue: false, // Kein Text unter dem Barcode
-          margin: 0, // Keine Ränder
+          displayValue: false,
+          margin: 0,
           marginTop: 0,
           marginBottom: 0,
           marginLeft: 0,
@@ -139,13 +126,11 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     }
   
-    // Gespeicherten Barcode laden
     function loadBarcode() {
       const savedBarcode = localStorage.getItem("thwBarcode");
       displayBarcode(savedBarcode);
     }
   
-    // Barcode löschen
     function clearBarcode() {
       if (confirm("Möchten Sie den gespeicherten Barcode wirklich löschen?")) {
         localStorage.removeItem("thwBarcode");

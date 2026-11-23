@@ -3,9 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>THW Barcode Scanner</title>
+  <title>THW Stempelkarte</title>
   <link rel="stylesheet" href="style.css">
   <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon-192.png">
   <meta name="theme-color" content="#003399">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -14,7 +16,7 @@
 <body>
   <div class="container">
     <header>
-      <h1>THW Barcode Scanner</h1>
+      <h1>THW Stempelkarte</h1>
     </header>
     
     <main>
@@ -46,21 +48,18 @@
     <svg id="barcodeDisplay"></svg>
   </div>
   
-  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/quagga@0.12.1/dist/quagga.min.js"></script>
+  <script src="vendor/JsBarcode.all.min.js"></script>
+  <script src="vendor/quagga.min.js"></script>
   <script src="app.js"></script>
   <script>
-    // Service Worker registrieren
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('service-worker.js')
         .then(reg => console.log('Service Worker registriert', reg))
         .catch(err => console.log('Service Worker nicht registriert', err));
     }
     
-    // Vollbildmodus erzwingen, wenn als App geöffnet
     window.addEventListener('load', function() {
       if (window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches) {
-        // App läuft im Standalone-Modus
         document.body.classList.add('standalone-mode');
       }
     });
